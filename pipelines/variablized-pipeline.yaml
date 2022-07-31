@@ -1,0 +1,124 @@
+parameters:
+  - name: publishImage
+    displayName: Publish images?
+    type: boolean
+    default: true
+  - name: buildAll
+    displayName: Build all images?
+    type: boolean
+    default: false
+
+trigger:
+  branches:
+    include:
+    - master
+    - qa
+    - dev
+
+variables:
+  - group: dssd-metrics-api-token
+  - name: branch
+    value: $[replace(variables['Build.SourceBranchName'], 'master', 'prod')]
+  - name: buildTag
+    value: $(Build.SourceBranchName)-$(Build.SourceVersion)
+  - name: backend-alias
+    value: backend-image
+  - name: backend-version
+    value: backend-$(buildTag)
+  - name: frontend-alias
+    value: frontend-image
+  - name: frontend-version
+    value: frontend-$(buildTag)
+  - name: proxy-alias
+    value: proxy-image
+  - name: proxy-version
+    value: proxy-$(buildTag)
+  - name: app-image-name
+    value: PLACEHOLDER
+
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: INTERNAL_pipeline_templates
+    - repository: manifests
+      type: git
+      name: PLACEHOLDER
+  containers:
+    - container: postgres
+      image: postgres:13.3
+      env:
+        POSTGRES_DB: db
+        POSTGRES_HOST: localhost
+        POSTGRES_PASSWORD: password
+        POSTGRES_USER: user
+      ports:
+        - 5432:5432
+
+extends:
+  template: /pipeline/variablized-build-pipeline.yaml@templates
+  parameters:
+    ${{ if eq(parameters['buildAll'], true) }}:
+      buildAll: true
+    postStages:
+      - stage: Publish
+        dependsOn: ["GetChanges", "ScanImage"]
+        condition: and(not(or(failed(), canceled())), eq(${{ parameters.publishImage }}, true))
+        variables:
+          - group: docker-visimobuilder-creds
+          - name: backendFlag
+            value: $[stageDependencies.GetChanges.SetFlags.outputs['OutputVars.backendFlag']]
+          - name: frontendFlag
+            value: $[stageDependencies.GetChanges.SetFlags.outputs['OutputVars.frontendFlag']]
+          - name: proxyFlag
+            value: $[stageDependencies.GetChanges.SetFlags.outputs['OutputVars.proxyFlag']]
+        jobs:
+          - job: PublishBackend
+            condition: eq(variables.backendFlag, 'True')
+            steps:
+              - template: /publish/push-image.yaml@templates
+                parameters:
+                  filePath: ./backend/Dockerfile
+                  imageName: $(app-image-name)
+                  tags: $(backend-version),backend-latest-$(Build.SourceBranchName)
+          - job: PublishFrontend
+            condition: eq(variables.frontendFlag, 'True')
+            steps:
+              - template: /publish/push-image.yaml@templates
+                parameters:
+                  filePath: ./frontend/Dockerfile
+                  imageName: $(app-image-name) 
+                  tags: $(frontend-version),frontend-latest-$(Build.SourceBranchName)
+          - job: PublishProxy
+            condition: eq(variables.proxyFlag, 'True')
+            steps:
+              - template: /publish/push-image.yaml@templates
+                parameters:
+                  filePath: ./proxy/Dockerfile
+                  imageName: $(app-image-name) 
+                  tags: $(proxy-version),proxy-latest-$(Build.SourceBranchName)
+      - stage: UpdateManifests
+        dependsOn: ["GetChanges", "Publish"]
+        variables:
+          backendFlag: $[stageDependencies.GetChanges.SetFlags.outputs['OutputVars.backendFlag']]
+          frontendFlag: $[stageDependencies.GetChanges.SetFlags.outputs['OutputVars.frontendFlag']]
+          proxyFlag: $[stageDependencies.GetChanges.SetFlags.outputs['OutputVars.proxyFlag']]
+        condition: and(or(eq(dependencies.GetChanges.outputs['SetFlags.OutputVars.backendFlag'], 'True'), eq(dependencies.GetChanges.outputs['SetFlags.OutputVars.frontendFlag'], 'True'), eq(dependencies.GetChanges.outputs['SetFlags.OutputVars.proxyFlag'], 'True')), not(or(failed(), canceled())), eq(${{ parameters.publishImage }}, true))
+        jobs:
+          - template: /publish/variablized-kustomize-image-update.yaml@templates
+            parameters:
+              kustomizationDir: overlays/$(branch)
+              manifestsBranch: master
+              manifestsRepository: manifests
+              repoName: PLACEHOLDER
+              images: []
+              backendFlag: $(backendFlag)
+              frontendFlag: $(frontendFlag)
+              proxyFlag: $(proxyFlag)
+              backendVersion: $(backend-version)
+              frontendVersion: $(frontend-version)
+              proxyVersion: $(proxy-version)
+              backendAlias: $(backend-alias)
+              frontendAlias: $(frontend-alias)
+              proxyAlias: $(proxy-alias)
+              appImageName: $(app-image-name)

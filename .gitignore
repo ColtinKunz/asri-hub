@@ -1,0 +1,5 @@
+# Ignore local container data
+psql-data
+rabbitmq-data
+redis-data
+staticfiles

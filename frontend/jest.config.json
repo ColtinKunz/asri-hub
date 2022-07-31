@@ -1,0 +1,12 @@
+{
+    "testRegex": "((\\.|/*.)(test))\\.js?$",
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!<rootDir>/node_modules/"
+    ],
+    "moduleNameMapper": {
+      "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|yaml|yml)$": "<rootDir>/fileMock.js",
+      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "identity-obj-proxy"  
+    },
+    "testEnvironment": "jsdom"
+}

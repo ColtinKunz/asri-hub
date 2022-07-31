@@ -1,0 +1,86 @@
+parameters:
+  - name: publishImage
+    displayName: Publish images?
+    type: boolean
+    default: true
+
+trigger:
+  - master
+  - qa
+  - dev
+
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: INTERNAL_pipeline_templates
+    - repository: manifests
+      type: git
+      name: PLACEHOLDER
+  containers:
+    - container: postgres
+      image: postgres:13.3
+      env:
+        POSTGRES_DB: db
+        POSTGRES_HOST: localhost
+        POSTGRES_PASSWORD: password
+        POSTGRES_USER: user
+      ports:
+        - 5432:5432
+
+variables:
+  - group: dssd-metrics-api-token
+  - name: branch
+    value: $[replace(variables['Build.SourceBranchName'], 'master', 'prod')]
+  - name: buildTag
+    value: $(Build.SourceBranchName)-$(Build.SourceVersion)
+
+extends:
+  template: /pipeline/standard-build-pipeline.yaml@templates
+  parameters:
+    postStages:
+      - stage: Publish
+        condition: and(not(or(failed(), canceled())), eq(${{ parameters.publishImage }}, true))
+        variables:
+          - group: docker-visimobuilder-creds
+        jobs:
+          - job: PublishBackend
+            steps:
+              - template: /publish/push-image.yaml@templates
+                parameters:
+                  filePath: ./backend/Dockerfile
+                  imageName: PLACEHOLDER
+                  tags: $(buildTag),backend-latest-$(Build.SourceBranchName)
+          - job: PublishFrontend
+            steps:
+              - template: /publish/push-image.yaml@templates
+                parameters:
+                  filePath: ./frontend/Dockerfile
+                  imageName: PLACEHOLDER
+                  tags: $(buildTag),frontend-latest-$(Build.SourceBranchName)
+          - job: PublishProxy
+            steps:
+              - template: /publish/push-image.yaml@templates
+                parameters:
+                  filePath: ./proxy/Dockerfile
+                  imageName: PLACEHOLDER
+                  tags: $(buildTag),proxy-latest-$(Build.SourceBranchName)
+      - stage: UpdateManifests
+        condition: and(not(or(failed(), canceled())), eq(${{ parameters.publishImage }}, true))
+        jobs:
+          - template: /publish/kustomize-image-update.yaml@templates
+            parameters:
+              images:
+                - alias: backend-image
+                  name: PLACEHOLDER
+                  version: $(buildTag)
+                - alias: frontend-image
+                  name: PLACEHOLDER
+                  version: $(buildTag)
+                - alias: proxy-image
+                  name: PLACEHOLDER
+                  version: $(buildTag)
+              kustomizationDir: overlays/$(branch)
+              manifestsBranch: master
+              manifestsRepository: manifests
+              repoName: PLACEHOLDER

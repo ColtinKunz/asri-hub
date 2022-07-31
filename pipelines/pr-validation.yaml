@@ -1,0 +1,32 @@
+trigger: none
+
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: INTERNAL_pipeline_templates
+  containers:
+    - container: postgres
+      image: postgres:13.3
+      env:
+        POSTGRES_DB: db
+        POSTGRES_HOST: localhost
+        POSTGRES_PASSWORD: password
+        POSTGRES_USER: user
+      ports:
+        - 5432:5432
+
+variables:
+  - group: dssd-metrics-api-token
+
+extends:
+  template: /pipeline/standard-build-pipeline.yaml@templates
+  parameters:
+    preStages:
+      - stage: ValidatePRTargets
+        variables:
+          - group: ads-rest-api-token
+        jobs:
+          - job: ValidatePRTargets
+            steps:
+              - template: /pr/check-source-target.yaml@templates

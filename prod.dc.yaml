@@ -1,0 +1,61 @@
+version: "3"
+
+services:
+  psql:
+    image: postgres:13.3
+    container_name: psql
+    environment: &dbConfig
+      POSTGRES_DB: database
+      POSTGRES_USER: database_admin
+      POSTGRES_PASSWORD: secret_password
+      POSTGRES_PORT: "5432"
+    ports:
+      - "5432:5432"
+  backend: &backendConfig
+    build:
+      context: "./backend"
+      dockerfile: Dockerfile
+    container_name: backend
+    env_file: ./backend/.env
+    environment:
+      POSTGRES_HOST: psql
+      DEBUG: "false"
+      <<: *dbConfig
+    ports:
+      - "8000:8000"
+    depends_on:
+      - psql
+    restart: on-failure
+  backend-staticfiles:
+    <<: *backendConfig
+    container_name: backend-staticfiles
+    entrypoint: ["/bin/bash", "-c", "echo yes | python manage.py collectstatic"]
+    volumes:
+      - ./staticfiles:/app/staticfiles
+    ports: []
+    restart: "no"
+  frontend:
+    build:
+      context: "./frontend"
+      dockerfile: Dockerfile
+    container_name: frontend
+    env_file: ./frontend/.env.development
+    ports:
+      - "3000:3000"
+    restart: on-failure
+  proxy:
+    build:
+      context: "./proxy"
+      dockerfile: Dockerfile
+    container_name: proxy
+    env_file: ./proxy/.env
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: on-failure
+    volumes:
+      - ./proxy/credentials:/etc/nginx/credentials
+      - ./staticfiles:/etc/nginx/html
+    depends_on:
+      - backend
+      - frontend

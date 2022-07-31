@@ -1,0 +1,42 @@
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: INTERNAL_pipeline_templates
+
+parameters:
+  - name: versionIncrement
+    displayName: Should the version number increment?
+    type: boolean
+    default: true
+  - name: releaseType
+    displayName: Release Type
+    type: string
+    default: patch
+    values:
+      - hotfix
+      - patch
+      - minor
+      - major
+  - name: preRelease
+    displayName: Is this a pre-release?
+    type: string
+    default: "no"
+    values:
+      - "no"
+      - alpha
+      - beta
+  - name: forceTag
+    displayName: "[CAUTION]: Should the tag be forced to update?"
+    type: boolean
+    default: false
+
+trigger: none
+
+extends:
+  template: /pipeline/tag-release.yaml@templates
+  parameters:
+    versionIncrement: ${{ parameters.versionIncrement }}
+    releaseType: ${{ parameters.releaseType }}
+    preRelease: ${{ parameters.preRelease }}
+    forceTag: ${{ parameters.forceTag }}
