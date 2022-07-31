@@ -1,0 +1,17 @@
+- op: add
+  path: /spec/template/spec/volumes
+  value:
+    - name: &pvcName redis-persistence
+      persistentVolumeClaim:
+        claimName: *pvcName
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts
+  value:
+    - name: *pvcName
+      mountPath: /data
+      subPath: redis-data
+- op: add
+  path: /spec/template/spec/containers/0/args
+  value:
+    - --appendonly
+    - "yes"

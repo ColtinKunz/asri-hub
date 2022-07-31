@@ -1,0 +1,22 @@
+- op: add
+  path: /spec/template/spec/volumes
+  value:
+    - name: &volumeName staticfiles
+      emptyDir: {}
+- op: add
+  path: /spec/template/spec/initContainers
+  value:
+    - name: collect-static
+      image: backend-image
+      command: ["/bin/bash", "-c", "echo yes | python manage.py collectstatic"]
+      envFrom:
+        - secretRef:
+            name: backend-env
+      volumeMounts:
+        - name: *volumeName
+          mountPath: /app/staticfiles
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts
+  value:
+    - name: *volumeName
+      mountPath: /etc/nginx/html

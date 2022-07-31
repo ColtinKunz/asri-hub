@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &deploymentName backend-celery-scheduler
+spec:
+  template:
+    spec:
+      containers:
+        - name: *deploymentName
+          image: backend-image
+          command:
+            - python
+            - -m
+            - celery
+            - -A
+            - backend.celery
+            - beat
+            - --loglevel=INFO
+          envFrom:
+            - secretRef:
+                name: backend-env

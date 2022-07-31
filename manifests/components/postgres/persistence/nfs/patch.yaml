@@ -1,0 +1,12 @@
+- op: add
+  path: /spec/template/spec/securityContext/supplementalGroups
+  value:
+    - 0
+    - 999
+    - 1000
+- op: replace
+  path: /spec/template/spec/securityContext/runAsUser
+  value: 1000
+- op: replace
+  path: /spec/template/spec/securityContext/runAsGroup
+  value: 1000

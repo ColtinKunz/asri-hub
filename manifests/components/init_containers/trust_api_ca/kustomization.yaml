@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+secretGenerator:
+  - name: external-api-ca
+    type: Opaque
+    files:
+      - external-api-ca.crt
+
+patches:
+  - path: patch.yaml
+    target:
+      kind: Deployment
+      labelSelector: component=backend

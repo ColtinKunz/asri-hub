@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+images:
+  - name: backend-image
+    newName: asri-hub
+    newTag: backend-latest
+  - name: frontend-image
+    newName: asri-hub
+    newTag: frontend-latest
+  - name: proxy-image
+    newName: asri-hub
+    newTag: proxy-latest
+
+components:
+  - ../../components/environments/backend/dev
+  - ../../components/environments/proxy/dev
+  - ../../components/ingress/staging
+  - ../../components/init_containers/migrations
+  - ../../components/init_containers/proxy_collect_static
+  - ../../components/pull_policy/Always
+  - ../../components/pullcred
+  - ../../components/scale_strategy/replicas1
+
+resources:
+  - ../../base

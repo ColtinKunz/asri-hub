@@ -1,0 +1,2 @@
+# This is where the CA certificate that must be added to the trust should be located. This should
+  not be a secret value and does not need to be encrypted.

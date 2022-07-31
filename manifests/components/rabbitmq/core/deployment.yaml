@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &deploymentName rabbitmq
+spec:
+  template:
+    spec:
+      containers:
+        - name: *deploymentName
+          image: rabbitmq-image
+          ports:
+            - containerPort: 5672
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
