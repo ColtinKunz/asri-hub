@@ -1,0 +1,12 @@
+- op: add
+  path: /metadata/annotations/cert-manager.io~1cluster-issuer
+  value: letsencrypt-staging
+- op: replace
+  path: /spec/rules/0/host
+  value: &hostname HOST-NAME
+- op: replace
+  path: /spec/rules/0/http/paths/0/backend/service/name
+  value: proxy
+- op: replace
+  path: /spec/tls/0/hosts/0
+  value: *hostname

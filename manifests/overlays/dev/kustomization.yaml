@@ -3,19 +3,18 @@ kind: Kustomization
 
 images:
   - name: backend-image
-    newName: asri-hub
-    newTag: backend-latest
+    newName: registry.gitlab.com/asrio24/asri-hub
+    newTag: main
   - name: frontend-image
-    newName: asri-hub
-    newTag: frontend-latest
+    newName: registry.gitlab.com/asrio24/asri-hub
+    newTag: main
   - name: proxy-image
-    newName: asri-hub
-    newTag: proxy-latest
+    newName: registry.gitlab.com/asrio24/asri-hub
+    newTag: main
 
 components:
   - ../../components/environments/backend/dev
   - ../../components/environments/proxy/dev
-  - ../../components/ingress/staging
   - ../../components/init_containers/migrations
   - ../../components/init_containers/proxy_collect_static
   - ../../components/pull_policy/Always

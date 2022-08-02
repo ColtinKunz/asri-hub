@@ -11,6 +11,9 @@ images:
   - name: proxy-image
     newName: asri-hub
     newTag: proxy-latest
+  - name: postgres-image
+    newName: postgres
+    newTag: latest
 
 components:
   - ../../components/environments/backend/prod
