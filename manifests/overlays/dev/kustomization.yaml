@@ -11,8 +11,14 @@ images:
   - name: proxy-image
     newName: registry.gitlab.com/asrio24/asri-hub
     newTag: proxy-latest
+  - name: postgres-image
+    newName: postgres
+    newTag: latest
+
 
 components:
+  - ../../components/postgres
+  - ../../components/postgres/environments/dev
   - ../../components/environments/backend/dev
   - ../../components/environments/proxy/dev
   - ../../components/init_containers/migrations
