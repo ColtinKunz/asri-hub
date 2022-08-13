@@ -4,13 +4,13 @@ kind: Kustomization
 images:
   - name: backend-image
     newName: registry.gitlab.com/asrio24/asri-hub
-    newTag: main
+    newTag: backend-latest
   - name: frontend-image
     newName: registry.gitlab.com/asrio24/asri-hub
-    newTag: main
+    newTag: frontend-latest
   - name: proxy-image
     newName: registry.gitlab.com/asrio24/asri-hub
-    newTag: main
+    newTag: proxy-latest
 
 components:
   - ../../components/environments/backend/dev
