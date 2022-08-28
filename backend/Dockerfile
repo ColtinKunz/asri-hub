@@ -38,7 +38,7 @@ COPY --from=builder /home/worker/.local /home/worker/.local
 
 # copy over source code as root, but change ownership to worker
 USER root
-COPY ./backend .
+COPY ./backend /app/
 RUN chown -R worker:worker /app
 USER worker
 

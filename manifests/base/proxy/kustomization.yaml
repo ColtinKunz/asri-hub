@@ -3,7 +3,7 @@ kind: Kustomization
 
 commonLabels:
   component: proxy
-  source: visimo
+  source: asrio
 
 resources:
   - deployment.yaml
