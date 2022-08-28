@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &deploymentName proxy
+spec:
+  template:
+    spec:
+      containers:
+        - name: *deploymentName
+          image: proxy-image
+          ports:
+            - containerPort: 8080

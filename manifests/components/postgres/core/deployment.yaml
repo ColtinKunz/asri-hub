@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &deploymentName postgres
+spec:
+  template:
+    spec:
+      containers:
+        - name: *deploymentName
+          image: postgres-image
+          ports:
+            - containerPort: 5432
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999

@@ -1,0 +1,2 @@
+creation_rules:
+  - azure_keyvault: https://asri-hub-vault.vault.azure.net/keys/SOPS/8172625239ae435499a7804ab1e0e450

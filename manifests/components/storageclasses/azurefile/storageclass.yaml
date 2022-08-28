@@ -1,0 +1,17 @@
+allowVolumeExpansion: true
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: azurefile
+mountOptions:
+  - dir_mode=0777
+  - file_mode=0777
+  - mfsymlinks
+  - actimeo=30
+parameters:
+  storageAccount: &placeholder PLACEHOLDER
+  location: *placeholder
+  skuName: *placeholder
+provisioner: file.csi.azure.com
+reclaimPolicy: Delete
+volumeBindingMode: Immediate

@@ -1,0 +1,12 @@
+- op: add
+  path: /spec/template/spec/volumes
+  value:
+    - name: &pvcName postgres-persistence
+      persistentVolumeClaim:
+        claimName: *pvcName
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts
+  value:
+    - name: *pvcName
+      mountPath: /var/lib/postgresql/data
+      subPath: postgres-data

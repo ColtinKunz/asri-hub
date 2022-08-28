@@ -1,0 +1,13 @@
+- op: add
+  path: /spec/template/spec/initContainers
+  value:
+    - command: ["python", "manage.py", "migrate"]
+      envFrom:
+        - secretRef:
+            name: backend-env
+      image: backend-image
+      imagePullPolicy: Always
+      name: migrations
+- op: add
+  path: /spec/template/spec/containers/0/imagePullPolicy
+  value: Always

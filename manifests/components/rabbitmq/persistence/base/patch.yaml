@@ -1,0 +1,15 @@
+- op: add
+  path: /spec/template/spec/volumes
+  value:
+    - name: &pvcName rabbitmq-persistence
+      persistentVolumeClaim:
+        claimName: *pvcName
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts
+  value:
+    - name: *pvcName
+      mountPath: /var/lib/rabbitmq/mnesia
+      subPath: rabbitmq-data
+- op: add
+  path: /spec/template/spec/hostname
+  value: rabbitmq

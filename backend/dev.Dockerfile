@@ -42,6 +42,6 @@ COPY --from=builder /home/worker/.local /home/worker/.local
 ENV PATH=/worker/.local/bin:$PATH
 
 # copy over source code
-COPY backend ./backend
+COPY ./backend /app/
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

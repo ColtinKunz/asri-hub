@@ -1,0 +1,23 @@
+{
+	"data": "ENC[AES256_GCM,data:VMaPlN9nms5lQ/8VIcGsY+WVyvzDZKRe+72iJr6ccr9GfcIzURNu1rUKuvbXhhXB0jyv58kWAb3lxqCB9PpeOjdsDsnrNQjVQh4jF1r8CxzIWFDdSOnVanFI/08oHK2MpHx+EDpQJ/x5uGp7hPNvtwZwsrniPKEXBeyjNK31kHqsDVfEj+OcRVvKtsSubWgPFL/MuTCk1gxTOZc4m3nYZeRr,iv:eLx//cGo7PmNuYNUv5ySjfH6wjNBrKal8qM2Lv+R7EA=,tag:u/U1if6Nepg4KZG9c9yfcw==,type:str]",
+	"sops": {
+		"kms": null,
+		"gcp_kms": null,
+		"azure_kv": [
+			{
+				"vault_url": "https://asri-hub-vault.vault.azure.net",
+				"name": "SOPS",
+				"version": "8172625239ae435499a7804ab1e0e450",
+				"created_at": "2022-08-02T03:26:30Z",
+				"enc": "hU0nUSMzIvFoLM_DylsREuK_CvEiQjyHkF5GCLIuwKmQBEeIEOc6N877gWOGmHWURtpao2z-8rsiEbMbQheMvQYWtnQ6yBjh6CrRfcsvyWrLFdnBy-GoRskKTfqOMoUc9fceq8zQmL4EGtuh9cAb_8bSF-BlKELP_3xiwDdOGWA37MYsq1ZpR6vdoYuOYP-tJxawOwyrYXUIZZcnfGsG13nXdChMYJHnJbc_8nZu7Tf6tjT5tpjicN4Y5ZZ7hKZy7EoQGgVDEKe5Ku-HuyzMirVNyjPQ2uASoFPq4pkWG2KGS4EXxDLZwOF-LMvQpvtd4psf62VjJA6wjc8BUwRMxw"
+			}
+		],
+		"hc_vault": null,
+		"age": null,
+		"lastmodified": "2022-08-02T03:26:32Z",
+		"mac": "ENC[AES256_GCM,data:nNadn2esO2fcb1lP+vkuSJJ6qUfRDY0VOZ3GkseebyuEc+su3uAIOnqjYZYolyuqTJ+ldvo/67KDnmIQjkk53VmcbXL1qVcoucshKCFLQT3EM+Hb9eCrGvpP5YDf/caB9Z7K+A9ybJeSCLIjRKus9Al9ak78lqtJya8Il5ap46Y=,iv:ljw/P8p5UrIols+XCOSQyFhmAQmp+inhztFgHzWS5Xc=,tag:0/iQbnupj2trNaoJBHX/Hw==,type:str]",
+		"pgp": null,
+		"unencrypted_suffix": "_unencrypted",
+		"version": "3.7.3"
+	}
+}
